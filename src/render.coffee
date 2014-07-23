@@ -31,16 +31,21 @@ renderer =
 		)
 	
 	renderMap: ->
-		$('#places').empty().append(for place in save.places
-			placeButton = $('<button>').text(place).click(->
-				travel($(this).text())
-			)
-			if save.place == place
-				placeButton.prop('disabled', true)
-			placeButton
+		$('#places').empty().append(for name in save.places
+			btn = $('<button>').text(name).click(-> travel($(this).text()))
+			if save.place == name
+				btn.prop('disabled', true)
+			btn
 		)
+		
+		place = places[save.place]
 		$('#place').text(save.place)
-		$('#place-description').text(places[save.place].description)
+		$('#place-description').text(place.description)
+		$('#actions').empty().append(for name, action of place.actions
+			btn = $('<button>').text(name)
+			btn.click(-> doAction($(this).text()))
+			btn
+		)
 	
 	renderEverything: ->
 		@renderClock()

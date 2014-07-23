@@ -1,7 +1,7 @@
 save = {}
 
 start = ->
-	storyAdd("after dropping out of high school and watching porn all day for the last 2 years, your parents finally kick you out of their basement, leaving you on the streets with no job and just a few bucks")
+	pushStory("after dropping out of high school and playing video games for the last 2 years, your parents finally kick you out of their basement, leaving you on the streets with no job and just a few bucks")
 	save =
 		clock:
 			week: 1

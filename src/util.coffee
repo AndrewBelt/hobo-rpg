@@ -4,8 +4,8 @@ class Transaction
 		for name, quantity of @delta
 			switch
 				when save.clock.hasOwnProperty(name)
-					if save.clock[name] + quantity < 0
-						return false
+					# Nothing can fail here
+					continue
 				when save.stats.hasOwnProperty(name)
 					if save.stats[name] + quantity < 0
 						return false
@@ -42,5 +42,5 @@ fixTime = ->
 	save.clock.week += save.clock.day // 7
 	save.clock.day %= 7
 
-storyAdd = (msg) ->
+pushStory = (msg) ->
 	$('#story').prepend($('<p>').text(msg))

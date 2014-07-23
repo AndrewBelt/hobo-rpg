@@ -1,4 +1,3 @@
-
 defaultAction =
 	run: ->
 	transaction: ->
@@ -17,7 +16,7 @@ places =
 				transaction: ->
 					new Transaction(dollar: 1, minute: 30)
 	'gas station':
-		description: null
+		description: "at the corner of a busy intersection"
 		actions: null
 
 
@@ -30,8 +29,16 @@ for _, place of places
 
 
 travel = (place) ->
-	console.log(place)
 	return if place == save.place
 	new Transaction(minute: 15).commit()
 	save.place = place
 	renderer.renderMap()
+
+doAction = (name) ->
+	action = places[save.place].actions[name]
+	transaction = action.transaction()
+	if transaction.valid()
+		transaction.commit()
+		action.run()
+	else
+		pushStory('transaction is invalid')
