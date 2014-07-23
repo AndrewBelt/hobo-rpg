@@ -1,0 +1,46 @@
+
+// Elements
+
+body, button {
+	font-family: Helvetica, Arial, sans-serif;
+	font-weight: normal;
+	font-size: 16px;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+button {
+	cursor: pointer;
+	background: white;
+	color: black;
+	border: 1px solid black;
+	padding: 5px 10px;
+	outline: none;
+	
+	&:hover {
+		text-decoration: underline;
+	}
+	
+	&:disabled {
+		color: #bbb;
+		border-color: #bbb;
+		text-decoration: none;
+		cursor: default;
+	}
+}
+
+table {
+	width: 100%;
+	
+	td {
+		padding: 5px 0;
+	}
+}
+
+// Utility classes
+
+.right {
+	text-align: right;
+}

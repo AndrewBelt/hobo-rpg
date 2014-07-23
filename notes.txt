@@ -1,0 +1,38 @@
+# Development notes
+
+## Locations
+
+alley
+- sleep
+- beg
+gas station
+- apply for job
+- work (if job) $5
+- buy
+	- soda
+	- candy
+	- gas (if has car)
+	- beer
+burger joint
+- apply for job
+- work (if job) $10
+- buy
+	- burger
+	- soda
+liquor store
+- buy
+	- liquor
+	- vodka
+pizzeria
+- apply for job
+- work (if job) $15
+- buy
+	- cheese pizza
+	- pepperoni pizza
+high school
+- attend class
+train station
+- beg
+community college
+university
+bank

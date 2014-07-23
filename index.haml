@@ -1,0 +1,30 @@
+!!!
+%html
+	%head
+		%title hobo rpg
+		%link{rel: 'stylesheet', href: '960.css'}
+		%link{rel: 'stylesheet', href: 'style.css'}
+		%script{src: 'jquery-2.1.1.min.js'}
+	%body
+		.container_12
+			.grid_12.right
+				%h2#clock
+		
+		.container_12
+			.grid_3
+				#story
+			
+			.grid_6
+				%h3 map
+				#places
+				%h3#place
+				#place-description
+				#actions
+			
+			.grid_3
+				%h3 stats
+				%table#stats
+				%h3 inventory
+				%table#inventory
+		
+		%script{src: 'game.js'}
