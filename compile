@@ -2,5 +2,5 @@
 
 haml index.haml > index.html
 lessc style.less > style.css
-cat src/{util,render,places,main}.coffee | coffee -sc > game.js
+coffee -cj game.js src/{util,render,places,main}.coffee
 echo "Compiled life"
