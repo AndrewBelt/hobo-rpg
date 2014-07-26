@@ -5,26 +5,42 @@
 		%link{rel: 'stylesheet', href: '960.css'}
 		%link{rel: 'stylesheet', href: 'style.css'}
 		%script{src: 'jquery-2.1.1.min.js'}
+		%script{src: 'doT.js'}
 	%body
-		.container_12
-			.grid_12.right
-				%h2#clock
+		%script#template{type: 'plain/text'}
+			#tooltip
+			.container_12
+				.grid_12.right
+					%h2#clock {{=clockToString()}}
+			.container_12
+				.grid_3
+					{{~gui.story :msg}}
+					%p {{=msg}}
+					{{~}}
+				.grid_6
+					%h3 map
+					#places
+						{{~save.places :place}}
+						%button{onclick: 'travel("{{=place}}")'} {{=place}}
+						{{~}}
+					{{var place = places[save.place];}}
+					%h3#place {{=save.place}}
+					%p#place-description {{=place.description}}
+					#actions
+						{{ for (var name in place.actions) { }}
+						{{ var action = place.actions[name]; }}
+						{{? !action.visible || action.visible() }}
+						%button{onclick: 'doAction("{{=name}}")'} {{=name}}
+						{{?}}
+						{{ } }}
+					%h3 buy
+					#buy
+				.grid_3
+					%h3 stats
+					%table#stats
+					%h3 inventory
+					%table#inventory
 		
-		.container_12
-			.grid_3
-				#story
-			
-			.grid_6
-				%h3 map
-				#places
-				%h3#place
-				%p#place-description
-				#actions
-			
-			.grid_3
-				%h3 stats
-				%table#stats
-				%h3 inventory
-				%table#inventory
+		#main
 		
 		%script{src: 'game.js'}

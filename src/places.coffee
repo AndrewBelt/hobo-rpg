@@ -34,6 +34,8 @@ places =
 					new Transaction(dollar: 7, hour: 1, energy: -10)
 				run: ->
 					say("work sucks, but someone has to do it.")
+		buy:
+			cigs: 5
 	'high school':
 		description: "aren't you a bit too old for this?"
 		actions:
@@ -41,4 +43,3 @@ places =
 				transaction: ->
 					new Transaction(intellegence: 2, hour: 6, energy: -20)
 				run: ->
-					say("")

@@ -1,30 +1,37 @@
 class Transaction
-	constructor: (@delta) ->
+	# example usage:
+	# new Transaction(minute: 30, energy: -10, dollar: 10)
+	constructor: (args) ->
+		@clock = {}
+		@stats = {}
+		@inventory = {}
+		for name, quantity of args
+			switch
+				when save.clock.hasOwnProperty(name)
+					@clock[name] = quantity
+				when save.stats.hasOwnProperty(name)
+					@stats[name] = quantity
+				else
+					@inventory[name] = quantity
+	
 	valid: ->
-		for name, quantity of @delta
-			switch
-				when save.clock.hasOwnProperty(name)
-					# Nothing can fail here
-					continue
-				when save.stats.hasOwnProperty(name)
-					if save.stats[name] + quantity < 0
-						return false
-				else
-					if (save.inventory[name] || 0) + quantity < 0
-						return false
+		for name, quantity of @stats
+			if save.stats[name] + quantity < 0
+				return false
+		for name, quantity of @inventory
+			if save.inventory[name] + quantity < 0
+				return false
 		true
+	
 	commit: ->
-		for name, quantity of @delta
-			switch
-				when save.clock.hasOwnProperty(name)
-					save.clock[name] += quantity
-				when save.stats.hasOwnProperty(name)
-					save.stats[name] += quantity
-				else
-					newQuantity = (save.inventory[name] || 0) + quantity
-					save.inventory[name] = newQuantity
+		for name, quantity of @clock
+			save.clock[name] += quantity
 		fixClock()
+		for name, quantity of @stats
+			save.stats[name] += quantity
 		fixStats()
+		for name, quantity of @inventory
+			save.inventory[name] = (save.inventory[name] || 0) + quantity
 		fixInventory()
 
 
@@ -45,15 +52,20 @@ fixInventory = ->
 		if quantity == 0
 			delete save.inventory[item]
 
+clockToString = ->
+	day = days[save.clock.day]
+	minute = ('0' + Math.floor(save.clock.minute)).substr(-2, 2)
+	"week #{save.clock.week} #{day} #{save.clock.hour}:#{minute}"
+
 say = (msg) ->
-	$('#story').prepend($('<p>').text(msg))
-	$('#story').children().slice(8).remove()
+	gui.story.unshift(msg)
+	gui.story.splice(8, Number.MAX_VALUE)
 
 travel = (place) ->
 	return if place == save.place
 	new Transaction(minute: 15).commit()
 	save.place = place
-	renderer.renderEverything()
+	gui.render()
 
 doAction = (name) ->
 	place = places[save.place]
@@ -67,4 +79,4 @@ doAction = (name) ->
 		transaction.commit()
 	if action.run
 		action.run()
-	renderer.renderEverything()
+	gui.render()

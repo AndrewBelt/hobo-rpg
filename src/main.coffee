@@ -24,4 +24,5 @@ start = ->
 
 
 start()
-renderer.renderEverything()
+gui.transaction = new Transaction(minute: 5, health: -10, dollar: 7, something: -1)
+gui.render()
