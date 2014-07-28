@@ -1,5 +1,9 @@
 # Development notes
 
+## TODO
+
+add links to inventory
+
 ## Locations
 
 alley

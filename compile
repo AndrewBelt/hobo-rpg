@@ -1,6 +1,0 @@
-#!/bin/bash
-
-haml index.haml > index.html
-lessc style.less > style.css
-coffee -bcj game.js src/{util,gui,places,main}.coffee
-echo "Compiled life"

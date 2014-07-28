@@ -2,46 +2,52 @@ class Transaction
 	# example usage:
 	# new Transaction(minute: 30, energy: -10, dollar: 10)
 	constructor: (args) ->
-		@clock = {}
+		@clock = 0
 		@stats = {}
 		@inventory = {}
 		for name, quantity of args
-			switch
-				when save.clock.hasOwnProperty(name)
-					@clock[name] = quantity
-				when save.stats.hasOwnProperty(name)
-					@stats[name] = quantity
+			switch name
+				when 'minute'
+					@clock += quantity
+				when 'hour'
+					@clock += 60*quantity
+				when 'day'
+					@clock += 24*60*quantity
 				else
-					@inventory[name] = quantity
+					if save.stats.hasOwnProperty(name)
+						@stats[name] = quantity
+					else
+						@inventory[name] = quantity
 	
-	valid: ->
+	error: ->
 		for name, quantity of @stats
 			if save.stats[name] + quantity < 0
-				return false
+				return name
 		for name, quantity of @inventory
-			if save.inventory[name] + quantity < 0
-				return false
-		true
+			if (save.inventory[name] || 0) + quantity < 0
+				return name
+		null
 	
 	commit: ->
-		for name, quantity of @clock
-			save.clock[name] += quantity
-		fixClock()
+		if @clock
+			save.clock += @clock
 		for name, quantity of @stats
 			save.stats[name] += quantity
 		fixStats()
 		for name, quantity of @inventory
 			save.inventory[name] = (save.inventory[name] || 0) + quantity
 		fixInventory()
+	
+	flatten: ->
+		obj = {}
+		if @clock
+			obj['clock'] = @clock
+		for name, quantity of @stats
+			obj[name] = quantity
+		for name, quantity of @inventory
+			obj[name] = quantity
+		obj
 
-
-fixClock = ->
-	save.clock.hour += save.clock.minute // 60
-	save.clock.minute %= 60
-	save.clock.day += save.clock.hour // 24
-	save.clock.hour %= 24
-	save.clock.week += save.clock.day // 7
-	save.clock.day %= 7
 
 fixStats = ->
 	save.stats.energy = 100 if save.stats.energy > 100
@@ -49,17 +55,23 @@ fixStats = ->
 
 fixInventory = ->
 	for item, quantity of save.inventory
+		# Clear out unused items
 		if quantity == 0
 			delete save.inventory[item]
 
 clockToString = ->
-	day = days[save.clock.day]
-	minute = ('0' + Math.floor(save.clock.minute)).substr(-2, 2)
-	"week #{save.clock.week} #{day} #{save.clock.hour}:#{minute}"
+	minute = save.clock
+	hour = minute // 60
+	day = hour // 24
+	week = day // 7 + 1
+	minute %= 60
+	hour %= 24
+	day %= 7
+	minuteString = ('0' + Math.floor(minute)).substr(-2, 2)
+	"week #{week} #{days[day]} #{hour}:#{minuteString}"
 
 say = (msg) ->
-	gui.story.unshift(msg)
-	gui.story.splice(8, Number.MAX_VALUE)
+	gui.say(msg)
 
 travel = (place) ->
 	return if place == save.place
@@ -67,16 +79,26 @@ travel = (place) ->
 	save.place = place
 	gui.render()
 
-doAction = (name) ->
-	place = places[save.place]
-	action = place.actions[name]
-	
+doAction = (action) ->
 	if action.transaction
 		transaction = action.transaction()
-		if !transaction.valid()
-			console.log('transaction invalid')
+		error = transaction.error()
+		if error
+			say("not enough #{error}")
 			return
-		transaction.commit()
+		else
+			transaction.commit()
 	if action.run
 		action.run()
 	gui.render()
+
+setTransaction = (action) ->
+	if action.transaction
+		transaction = action.transaction()
+		gui.openTooltip(transaction)
+
+clearTransaction = ->
+	gui.closeTooltip()
+
+choose = (arr) ->
+	arr[Math.floor(Math.random() * arr.length)]
