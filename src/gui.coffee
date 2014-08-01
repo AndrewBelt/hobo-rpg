@@ -1,12 +1,3 @@
-days = [
-	'monday'
-	'tuesday'
-	'wednesday'
-	'thursday'
-	'friday'
-	'saturday'
-	'sunday'
-]
 
 gui =
 	render: ->
@@ -20,7 +11,7 @@ gui =
 		$('#story p').slice(8).remove()
 	
 	renderClock: ->
-		$('#clock').text(clockToString())
+		$('#clock').text(clock.toString())
 	
 	renderStats: ->
 		$('#stats').empty()
@@ -48,22 +39,26 @@ gui =
 	renderMap: ->
 		$('#places').empty()
 		$('#places').append(for name, place of places
+			travelAction = place.travel
+			continue if travelAction.visible and !travelAction.visible()
 			btn = $('<button>').text(name)
+			# Disable button if already there
 			if save.place == name
 				btn.prop('disabled', true)
-			gui.attachAction(btn, place.travel)
+			gui.attachAction(btn, travelAction)
 			btn
 		)
 		
 		place = places[save.place]
 		$('#place').text(save.place)
-		$('#place-description').text(place.description)
+		$('#place-description').text(place.description())
 		
-		$('#actions').empty().append(for name, action of place.actions
-			if !action.visible or action.visible()
-				btn = $('<button>').text(name)
-				gui.attachAction(btn, action)
-				btn
+		$('#actions').empty()
+		$('#actions').append(for name, action of place.actions
+			continue if action.visible and !action.visible()
+			btn = $('<button>').text(name)
+			gui.attachAction(btn, action)
+			btn
 		)
 		
 		if place.store
@@ -72,13 +67,14 @@ gui =
 			$('#store').css('display', 'none')
 		$('#store-items').empty()
 		$('#store-items').append(for itemName, price of place.store
-			args = {dollar: -price}
-			args[itemName] = 1
-			buyAction =
-				transaction: -> new Transaction(args)
-			btn = $('<button>').text(itemName)
-			gui.attachAction(btn, buyAction)
-			btn
+			do (itemName, price) ->
+				args = {dollar: -price}
+				args[itemName] = 1
+				buyAction =
+					transaction: -> new Transaction(args)
+				btn = $('<button>').text(itemName)
+				gui.attachAction(btn, buyAction)
+				btn
 		)
 	
 	openTooltip: (transaction) ->
@@ -104,3 +100,7 @@ gui =
 		el.click(-> doAction(action); clearTransaction())
 		el.mouseenter(-> setTransaction(action))
 		el.mouseleave(-> clearTransaction())
+
+
+$('body').mousemove (e) ->
+	$('#tooltip').css(left: e.pageX, top: e.pageY + 20)

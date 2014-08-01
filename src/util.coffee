@@ -31,12 +31,20 @@ class Transaction
 	commit: ->
 		if @clock
 			save.clock += @clock
+		
 		for name, quantity of @stats
-			save.stats[name] += quantity
-		fixStats()
+			n = save.stats[name] + quantity
+			switch name
+				when 'energy', 'health', 'happiness'
+					n = 100 if n > 100
+			save.stats[name] = n
+			
 		for name, quantity of @inventory
-			save.inventory[name] = (save.inventory[name] || 0) + quantity
-		fixInventory()
+			n = (save.inventory[name] || 0) + quantity
+			if n > 0
+				save.inventory[name] = n
+			else
+				delete save.inventory[name]
 	
 	flatten: ->
 		obj = {}
@@ -49,35 +57,30 @@ class Transaction
 		obj
 
 
-fixStats = ->
-	save.stats.energy = 100 if save.stats.energy > 100
-	save.stats.health = 100 if save.stats.health > 100
-
-fixInventory = ->
-	for item, quantity of save.inventory
-		# Clear out unused items
-		if quantity == 0
-			delete save.inventory[item]
-
-clockToString = ->
-	minute = save.clock
-	hour = minute // 60
-	day = hour // 24
-	week = day // 7 + 1
-	minute %= 60
-	hour %= 24
-	day %= 7
-	minuteString = ('0' + Math.floor(minute)).substr(-2, 2)
-	"week #{week} #{days[day]} #{hour}:#{minuteString}"
+clock =
+	days: [
+		'monday'
+		'tuesday'
+		'wednesday'
+		'thursday'
+		'friday'
+		'saturday'
+		'sunday'
+	]
+	minute: ->
+		Math.floor(save.clock % 60)
+	hour: ->
+		save.clock // 60 % 24
+	day: ->
+		save.clock // (60*24) % 7
+	week: ->
+		save.clock // (60*24*7) + 1
+	toString: ->
+		minuteString = ('0' + clock.minute()).substr(-2, 2)
+		"week #{clock.week()} #{clock.days[clock.day()]} #{clock.hour()}:#{minuteString}"
 
 say = (msg) ->
 	gui.say(msg)
-
-travel = (place) ->
-	return if place == save.place
-	new Transaction(minute: 15).commit()
-	save.place = place
-	gui.render()
 
 doAction = (action) ->
 	if action.transaction
