@@ -29,9 +29,9 @@ start = ->
 	say "after dropping out of high school and playing video games for the last 2 years, your parents finally kick you out of their basement, leaving you on the streets with no job and just a few bucks. don't spend it all in one place."
 
 
-if !loadSave()
-	start()
-
-window.setInterval(saveSave, 5000)
-
-gui.render()
+$ ->
+	if !loadSave()
+		start()
+	window.setInterval(saveSave, 5000)
+	FastClick.attach(document.body)
+	gui.render()

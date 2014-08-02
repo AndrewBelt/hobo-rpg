@@ -69,8 +69,17 @@ places =
 	college:
 		description: -> ""
 		travel:
+			visible: -> save.stats.intellegence >= 10
 			transaction: -> new Transaction(minute: 15)
 			run: -> save.place = 'college'
+	hospital:
+		description: -> ""
+		travel:
+			transaction: -> new Transaction(minute: 15)
+			run: -> save.place = 'hospital'
+		actions:
+			'visit doctor':
+				transaction: -> new Transaction(hour: 3, health: 50, dollar: 100)
 	bank:
 		description: -> "your balance is $#{save.balance || 0}"
 		travel:
