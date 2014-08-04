@@ -105,3 +105,6 @@ clearTransaction = ->
 
 choose = (arr) ->
 	arr[Math.floor(Math.random() * arr.length)]
+
+has = (itemName) ->
+	save.inventory[itemName]?

@@ -14,7 +14,7 @@ all: index.html style.css game.js
 	lessc $^ > $@
 
 game.js: $(SRCS)
-	coffee -bcj $@ $^
+	coffee -cj $@ $^
 
 clean:
 	rm -fv index.html style.css game.js
