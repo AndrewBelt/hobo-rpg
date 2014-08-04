@@ -21,7 +21,7 @@ places =
 						new Transaction(dollar: dollars).commit()
 						say "a man throws you $#{dollars}."
 					else
-						say choice [
+						say choose [
 							"a group of teenagers walk past you but you fail to get their attention."
 							"the street is empty."
 						]
@@ -90,12 +90,12 @@ places =
 					if Math.random() > 0.5
 						dollars = Math.floor(Math.random()*20 + 1)
 						new Transaction(dollar: dollars).commit()
-						say choice [
+						say choose [
 							"a pastor gives you $#{dollars} after attempting to save you."
 							"a woman searches her purse and gives you $#{dollars}."
 						]
 					else
-						say choice [
+						say choose [
 							"nobody is around."
 							"a man scolds you for trespassing."
 							"a young man invites you to a bible study, but you decline."
