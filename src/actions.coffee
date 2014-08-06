@@ -131,7 +131,7 @@ places =
 			run: -> save.place = 'college'
 		actions:
 			'attend class':
-				transaction: -> new Transaction(intellegence: 5, dollar: 20, hour: 1)
+				transaction: -> new Transaction(intellegence: 5, dollar: -20, hour: 1)
 			'study':
 				transaction: -> new Transaction(intellegence: 2, hour: 1)
 	hospital:
