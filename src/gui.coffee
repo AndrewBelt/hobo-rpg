@@ -1,10 +1,18 @@
 
 gui =
+	init: ->
+		FastClick.attach(document.body)
+		$('body').mousemove (e) ->
+			$('#tooltip').css(left: e.pageX, top: e.pageY + 20)
+	
 	render: ->
 		@renderClock()
-		@renderStats()
-		@renderInventory()
+		@renderInfo()
 		@renderMap()
+		
+		darkness = clip(1 + 2 * Math.cos(2*Math.PI * (save.clock / (60*24) % 1)), 0, 1)
+		bg = Math.floor(255 - 100*darkness)
+		$('body').css('background-color', "rgb(#{bg}, #{bg}, #{bg})")
 	
 	say: (msg) ->
 		$('#story').prepend($('<p>').text(msg))
@@ -13,17 +21,20 @@ gui =
 	renderClock: ->
 		$('#clock').text(clock.toString())
 	
-	renderStats: ->
-		$('#stats').empty()
-		$('#stats').append(for name, quantity of save.stats
+	renderInfo: ->
+		$('#stats').empty().append(for name, quantity of save.stats
 			td1 = $('<td>').text(name)
 			td2 = $('<td>').addClass('right').text(quantity)
 			$('<tr>').append(td1, td2)
 		)
-	
-	renderInventory: ->
-		$('#inventory').empty()
-		$('#inventory').append(for item, quantity of save.inventory
+		
+		$('#skills').empty().append(for name, quantity of save.skills
+			td1 = $('<td>').text(name)
+			td2 = $('<td>').addClass('right').text(quantity)
+			$('<tr>').append(td1, td2)
+		)
+		
+		$('#inventory').empty().append(for item, quantity of save.inventory
 			if quantity != 0
 				td1 = $('<td>')
 				if items[item]
@@ -37,8 +48,7 @@ gui =
 		)
 	
 	renderMap: ->
-		$('#places').empty()
-		$('#places').append(for name, place of places
+		$('#places').empty().append(for name, place of places
 			travelAction = place.travel
 			continue if travelAction.visible and !travelAction.visible()
 			btn = $('<button>').text(name)
@@ -53,33 +63,32 @@ gui =
 		$('#place').text(save.place)
 		$('#place-description').text(place.description())
 		
-		$('#actions').empty()
-		$('#actions').append(for name, action of place.actions
+		$('#actions').empty().append(for name, action of place.actions
 			continue if action.visible and !action.visible()
 			btn = $('<button>').text(name)
 			gui.attachAction(btn, action)
 			btn
 		)
 		
-		if place.store
+		store = place.store
+		$('#buy').empty()
+		if store and (!store.visible or store.visible())
 			$('#store').css('display', 'block')
+			$('#buy').append(for itemName, price of store.buy
+				do (itemName, price) ->
+					args = {dollar: -price}
+					args[itemName] = 1
+					buyAction =
+						transaction: -> new Transaction(args)
+					btn = $('<button>').text(itemName)
+					gui.attachAction(btn, buyAction)
+					btn
+			)
 		else
 			$('#store').css('display', 'none')
-		$('#store-items').empty()
-		$('#store-items').append(for itemName, price of place.store
-			do (itemName, price) ->
-				args = {dollar: -price}
-				args[itemName] = 1
-				buyAction =
-					transaction: -> new Transaction(args)
-				btn = $('<button>').text(itemName)
-				gui.attachAction(btn, buyAction)
-				btn
-		)
 	
 	openTooltip: (transaction) ->
-		$('#tooltip-transaction').empty()
-		$('#tooltip-transaction').append(for name, delta of transaction.flatten()
+		$('#tooltip-transaction').empty().append(for name, delta of transaction.flatten()
 			td1 = $('<td>').text(name)
 			td2 = $('<td>').addClass('right')
 			if delta > 0
@@ -94,13 +103,26 @@ gui =
 		$('#tooltip').css('display', 'none')
 	
 	attachAction: (el, action) ->
-		# TODO
-		# Define the functions here, instead of in Util
-		# (or find some way to subclass an Action class)
-		el.click(-> doAction(action); clearTransaction())
-		el.mouseenter(-> setTransaction(action))
-		el.mouseleave(-> clearTransaction())
-
-
-$('body').mousemove (e) ->
-	$('#tooltip').css(left: e.pageX, top: e.pageY + 20)
+		el.click ->
+			if action.transaction
+				transaction = action.transaction()
+				error = transaction.error()
+				if error
+					say("not enough #{error}")
+					return
+				else
+					transaction.commit()
+			if action.run
+				action.run()
+			checkStats()
+			gui.render()
+			gui.closeTooltip()
+			saveSave()
+		
+		el.mouseenter ->
+			if action.transaction
+				transaction = action.transaction()
+				gui.openTooltip(transaction)
+		
+		el.mouseleave ->
+			gui.closeTooltip()
