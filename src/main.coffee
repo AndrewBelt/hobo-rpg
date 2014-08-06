@@ -28,7 +28,7 @@ migrate = ->
 start = ->
 	save =
 		version: 2
-		clock: 6*60
+		clock: 8*60 # 8am
 		stats:
 			health: 100
 			energy: 100

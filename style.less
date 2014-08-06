@@ -1,6 +1,7 @@
 
 // Elements
 
+
 body, button {
 	font-family: Helvetica, Arial, sans-serif;
 	font-weight: normal;
@@ -24,8 +25,7 @@ button {
 	}
 	
 	&:disabled {
-		color: #bbb;
-		border-color: #bbb;
+		opacity: 0.25;
 		text-decoration: none;
 		cursor: default;
 	}
@@ -42,14 +42,20 @@ table {
 // Utility classes
 
 .right {text-align: right;}
+.center {text-align: center;}
 .bad {color: red;}
 .good {color: green;}
 
-.link {
+a, .link {
 	background: none;
 	border: none;
-	color: blue;
+	color: rgb(52, 52, 163);
 	padding: 0;
+	text-decoration: none;
+	
+	&:hover {
+		text-decoration: underline;
+	}
 }
 
 // Specific classes
@@ -80,4 +86,12 @@ table {
 .grid_16 {
 	// Fix for collapsed empty divs
 	min-height: 1px;
+}
+
+footer {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 20px 0;
 }

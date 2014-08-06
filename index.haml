@@ -4,9 +4,9 @@
 		%title hobo rpg
 		%link{rel: 'stylesheet', href: '960.css'}
 		%link{rel: 'stylesheet', href: 'style.css'}
-		%script{src: 'jquery-2.1.1.min.js'}
-		%script{src: 'lz-string-1.3.3-min.js'}
-		%script{src: 'fastclick.min.js'}
+		%script{src: 'lib/jquery-2.1.1.min.js'}
+		%script{src: 'lib/lz-string-1.3.3-min.js'}
+		%script{src: 'lib/fastclick.min.js'}
 	%body
 		.tooltip#tooltip
 			%table#tooltip-transaction
@@ -34,5 +34,11 @@
 				%table#skills
 				%h3 inventory
 				%table#inventory
+		
+		%footer.container_12
+			.grid_12.right
+				v0.2
+				%button.link#reset reset
+				%a{href: 'https://github.com/AndrewBelt/hobo-rpg'} github
 		
 		%script{src: 'game.js'}

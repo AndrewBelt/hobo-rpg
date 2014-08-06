@@ -4,6 +4,10 @@ gui =
 		FastClick.attach(document.body)
 		$('body').mousemove (e) ->
 			$('#tooltip').css(left: e.pageX, top: e.pageY + 20)
+		$('#reset').click ->
+			if window.confirm("you are about to reset your save file.")
+				start()
+				gui.render()
 	
 	render: ->
 		@renderClock()
