@@ -116,7 +116,7 @@ places =
 		visible: -> save.skills.intellegence >= 100
 		actions:
 			'attend class':
-				transaction: -> new Transaction(intellegence: 5, dollar: 20, hour: 1)
+				transaction: -> new Transaction(intellegence: 5, dollar: -20, hour: 1)
 				run: ->
 					display "studying..."
 			'study':
