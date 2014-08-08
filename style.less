@@ -61,11 +61,11 @@ a, .link {
 // Specific classes
 
 .tooltip {
+	display: none;
 	position: absolute;
 	background: white;
 	border: 1px solid black;
 	width: 160px;
-	display: none;
 }
 
 .grid_1,
@@ -90,8 +90,23 @@ a, .link {
 
 footer {
 	position: absolute;
-	left: 0;
-	right: 0;
+	left: 0; right: 0;
 	bottom: 0;
 	padding: 20px 0;
+}
+
+#mask {
+	display: none;
+	position: absolute;
+	left: 0; right: 0;
+	top: 0; bottom: 0;
+	background: rgba(0, 0, 0, 0.25);
+}
+
+#panel {
+	background: white;
+	border: 1px solid black;
+	width: 400px;
+	margin: 200px auto;
+	padding: 0 20px;
 }

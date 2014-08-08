@@ -53,13 +53,20 @@ gui =
 	
 	renderMap: ->
 		$('#places').empty().append(for name, place of places
-			travelAction = place.travel
-			continue if travelAction.visible and !travelAction.visible()
+			continue if place.visible and !place.visible()
 			btn = $('<button>').text(name)
 			# Disable button if already there
 			if save.place == name
 				btn.prop('disabled', true)
-			gui.attachAction(btn, travelAction)
+			
+			do (name) ->
+				travelAction =
+					transaction: -> new Transaction(minute: 15)
+					run: ->
+						save.place = name
+						gui.openPanel("walking to #{name}...")
+				gui.attachAction(btn, travelAction)
+			
 			btn
 		)
 		
@@ -89,7 +96,7 @@ gui =
 					btn
 			)
 		else
-			$('#store').css('display', 'none')
+			$('#store').css(display: 'none')
 	
 	openTooltip: (transaction) ->
 		$('#tooltip-transaction').empty().append(for name, delta of transaction.flatten()
@@ -101,10 +108,10 @@ gui =
 				td2.append($('<span>').addClass('bad').text(delta))
 			$('<tr>').append(td1, td2)
 		)
-		$('#tooltip').css('display', 'block')
+		$('#tooltip').css(display: 'block')
 	
 	closeTooltip: ->
-		$('#tooltip').css('display', 'none')
+		$('#tooltip').css(display: 'none')
 	
 	attachAction: (el, action) ->
 		el.click ->
@@ -112,7 +119,7 @@ gui =
 				transaction = action.transaction()
 				error = transaction.error()
 				if error
-					say("not enough #{error}")
+					say "not enough #{error}"
 					return
 				else
 					transaction.commit()
@@ -130,3 +137,11 @@ gui =
 		
 		el.mouseleave ->
 			gui.closeTooltip()
+	
+	openPanel: (text, callback) ->
+		$('#panel-text').text(text)
+		$('#mask').css(display: 'block')
+		window.setTimeout((->
+			$('#mask').css(display: 'none')
+			callback() if callback
+		), 600)

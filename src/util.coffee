@@ -123,3 +123,6 @@ clip = (val, min, max) ->
 	val = min if val < min
 	val = max if val > max
 	val
+
+display = (text) ->
+	gui.openPanel(text)

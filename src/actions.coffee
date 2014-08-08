@@ -7,12 +7,10 @@
 places =
 	alley:
 		description: -> "behind a warehouse downtown"
-		travel:
-			transaction: -> new Transaction(minute: 15)
-			run: -> save.place = 'alley'
 		actions:
 			sleep:
 				transaction: -> new Transaction(hour: 8, energy: 100)
+				run: -> display "sleeping..."
 			beg:
 				transaction: -> new Transaction(minute: 30)
 				run: ->
@@ -27,9 +25,6 @@ places =
 						]
 	'gas station':
 		description: -> "at the corner of a busy intersection. open 7-11"
-		travel:
-			transaction: -> new Transaction(minute: 15)
-			run: -> save.place = 'gas station'
 		actions:
 			'apply for a job':
 				visible: -> 7 <= clock.hour() <= 22 and 'gas station' not in save.jobs
@@ -44,7 +39,8 @@ places =
 				visible: -> 7 <= clock.hour() <= 22 and 'gas station' in save.jobs
 				transaction: -> new Transaction(dollar: 7, hour: 1)
 				run: ->
-					say("work sucks, but someone has to do it.")
+					say "work sucks, but someone has to do it."
+					display "working..."
 		store:
 			visible: -> 7 <= clock.hour() <= 22
 			buy:
@@ -56,9 +52,6 @@ places =
 				"aren't you a bit too old for this?"
 			else
 				"nobody's here."
-		travel:
-			transaction: -> new Transaction(minute: 15)
-			run: -> save.place = 'high school'
 		actions:
 			'attend class':
 				visible: -> 6 <= clock.hour() <= 14 and clock.day() < 5
@@ -68,11 +61,9 @@ places =
 						"the lunches are horrible"
 						"you study hard"
 					]
+					display "studying..."
 	'library':
 		description: -> "a great place to read books"
-		travel:
-			transaction: -> new Transaction(minute: 15)
-			run: -> save.place = 'library'
 		actions:
 			'read book':
 				transaction: -> new Transaction(intellegence: 1, hour: 3)
@@ -80,9 +71,6 @@ places =
 				transaction: -> new Transaction(happiness: 10, hour: 1)
 	church:
 		description: -> "get saved here."
-		travel:
-			transaction: -> new Transaction(minute: 15)
-			run: -> save.place = 'church'
 		actions:
 			beg:
 				transaction: -> new Transaction(minute: 30)
@@ -103,11 +91,10 @@ places =
 			'attend service':
 				visible: -> clock.day() == 6 and 8 <= clock.hour() <= 11
 				transaction: -> new Transaction(happiness: 10, intellegence: -1, hour: 2)
+				run: ->
+					display "sitting..."
 	mall:
 		description: -> "where teens and parents go to spend their hard-earned money."
-		travel:
-			transaction: -> new Transaction(minute: 15)
-			run: -> save.place = 'mall'
 		actions: {}
 		store:
 			buy:
@@ -123,22 +110,21 @@ places =
 		actions:
 			sleep:
 				transaction: -> new Transaction(hour: 7, energy: 100)
+				run: -> display "sleeping..."
 	college:
 		description: -> "where you go to learn about debt."
-		travel:
-			visible: -> save.skills.intellegence >= 10
-			transaction: -> new Transaction(minute: 15)
-			run: -> save.place = 'college'
+		visible: -> save.skills.intellegence >= 100
 		actions:
 			'attend class':
 				transaction: -> new Transaction(intellegence: 5, dollar: 20, hour: 1)
+				run: ->
+					display "studying..."
 			'study':
 				transaction: -> new Transaction(intellegence: 2, hour: 1)
+				run: ->
+					display "studying..."
 	hospital:
 		description: -> ""
-		travel:
-			transaction: -> new Transaction(minute: 15)
-			run: -> save.place = 'hospital'
 		actions:
 			'visit nurse':
 				transaction: -> new Transaction(hour: 1, health: 20, dollar: -40)
@@ -146,9 +132,6 @@ places =
 				transaction: -> new Transaction(hour: 3, health: 50, dollar: -100)
 	bank:
 		description: -> "we strive to have your money\u2122. lobby open 8-5. atm open 24/7."
-		travel:
-			transaction: -> new Transaction(minute: 15)
-			run: -> save.place = 'bank'
 		actions:
 			'apply for job':
 				visible: -> 8 <= clock.hour() <= 16 and 'bank' not in save.jobs
@@ -164,6 +147,7 @@ places =
 			work:
 				visible: -> 8 <= clock.hour() <= 16 and 'bank' in save.jobs
 				transaction: -> new Transaction(hour: 1, dollar: 30)
+				run: -> display "working..."
 			'check balance':
 				run: ->
 					balance = save.balance || 0
