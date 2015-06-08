@@ -1,3 +1,5 @@
+# pro-tip: use code folding. it's good for you.
+
 # defaultAction:
 # 	transaction: -> new Transaction()
 # 	run: -> # Do nothing
@@ -12,7 +14,7 @@ places =
 				transaction: -> new Transaction(hour: 8, energy: 100)
 				run: -> display "sleeping..."
 			beg:
-				transaction: -> new Transaction(minute: 30)
+				transaction: -> new Transaction(hour: 1)
 				run: ->
 					if Math.random() > 0.5
 						dollars = Math.floor(Math.random()*5 + 1)
@@ -74,7 +76,7 @@ places =
 		actions:
 			beg:
 				transaction: -> new Transaction(minute: 30)
-				run: ->
+					run: ->
 					if Math.random() > 0.5
 						dollars = Math.floor(Math.random()*20 + 1)
 						new Transaction(dollar: dollars).commit()
@@ -175,6 +177,7 @@ places =
 						else
 							say "you don't have that much in the bank."
 
+
 # Items that have actions go here
 items =
 	'chocolate bar':
@@ -185,7 +188,7 @@ items =
 			new Transaction('chinese takeout': -1, fullness: 30)
 	'slice of pizza':
 		transaction: ->
-			new Transaction('slice of pizza': -1, fullness: 20, health: -1)
+			new Transaction('slice of pizza': -1, fullness: 20, health: -1, happiness: 5)
 	coffee:
 		transaction: ->
 			new Transaction('coffee': -1, energy: 10)

@@ -7,8 +7,8 @@ SRCS = \
 
 all: index.html style.css game.js
 
-%.html: %.haml
-	haml $^ > $@
+%.html: %.jade
+	jade -P $^
 
 %.css: %.less
 	lessc $^ > $@
