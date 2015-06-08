@@ -1,0 +1,52 @@
+doctype
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    // ipad crap
+    meta(name="apple-mobile-web-app-capable", content="yes")
+    meta(name="viewport", content="width=device-width")
+    
+    title hobo rpg
+    link(rel="stylesheet", href="lib/960.css")
+    link(rel="stylesheet", href="style.css")
+    script(src="lib/jquery-2.1.1.min.js")
+    script(src="lib/lz-string-1.3.3-min.js")
+    script(src="lib/fastclick.min.js")
+    script(src="game.js")
+  body
+    .tooltip#tooltip
+      table#tooltip-transaction
+    
+    header.container_12
+      .grid_12.right
+        h2#clock
+    
+    article.container_12
+      .grid_3
+        #story
+      .grid_6
+        h3 map
+        #places
+        h3#place
+        p#place-description
+        #actions
+        #store
+          h3 buy
+          #buy
+      .grid_3
+        h3 stats
+        table#stats
+        h3 skills
+        table#skills
+        h3 inventory
+        table#inventory
+    
+    footer.container_12
+      .grid_12.right
+        span#version
+        button.link#reset reset
+        a(href="https://github.com/AndrewBelt/hobo-rpg") github
+    
+    #mask
+      #panel
+        h3#panel-text
